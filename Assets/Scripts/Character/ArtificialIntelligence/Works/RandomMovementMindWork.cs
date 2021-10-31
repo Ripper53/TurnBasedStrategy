@@ -4,15 +4,41 @@ using UnityEngine;
 namespace ArtificialIntelligence.Works {
     public class RandomMovementMindWork : MindWork {
 
+        private enum Direction {
+            Up, Right, Down, Left
+        }
+        private readonly List<Direction> directions = new List<Direction>(4);
         public override IEnumerator<IMindInstruction> Run() {
-            if (Random.Range(0, 2) == 0) {
-                // Horizontal
-                Mind.Character.MoveBy(new Vector2Int(Random.Range(0, 2) == 0 ? 1 : -1, 0));
-            } else {
-                // Vertical
-                Mind.Character.MoveBy(new Vector2Int(0, Random.Range(0, 2) == 0 ? 1 : -1));
-            }
-            yield break;
+            directions.Clear();
+            directions.Add(Direction.Up);
+            directions.Add(Direction.Right);
+            directions.Add(Direction.Down);
+            directions.Add(Direction.Left);
+
+            do {
+                int index = Random.Range(0, directions.Count);
+                Direction dir = directions[index];
+                switch (dir) {
+                    case Direction.Up:
+                        if (Mind.Character.MoveUp())
+                            yield break;
+                        break;
+                    case Direction.Right:
+                        if (Mind.Character.MoveRight())
+                            yield break;
+                        break;
+                    case Direction.Down:
+                        if (Mind.Character.MoveDown())
+                            yield break;
+                        break;
+                    default:
+                        if (Mind.Character.MoveLeft())
+                            yield break;
+                        break;
+                }
+                directions.RemoveAt(index);
+            } while (directions.Count != 0);
+
         }
 
     }

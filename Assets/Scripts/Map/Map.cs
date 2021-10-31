@@ -22,7 +22,7 @@ public class Map : MonoBehaviour {
             for (int x = 0; x < Width; x++) {
                 values[x, y] = Random.Range(0, 2) switch {
                     0 => Tile.Ground,
-                    _ => Tile.Wall
+                    _ => Tile.Ground
                 };
             }
         }
