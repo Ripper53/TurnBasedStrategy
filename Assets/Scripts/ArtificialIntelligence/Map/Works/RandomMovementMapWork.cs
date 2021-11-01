@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ArtificialIntelligence.Works {
-    public class RandomMovementMindWork : MindWork {
+namespace ArtificialIntelligence.Map.Works {
+    public class RandomMovementMapWork : MapWork {
 
         private enum Direction {
             Up, Right, Down, Left

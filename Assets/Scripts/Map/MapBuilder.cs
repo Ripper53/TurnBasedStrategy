@@ -45,7 +45,7 @@ public class MapBuilder : MonoBehaviour {
                         break;
                 }
 
-                SpriteRenderer sr = Instantiate(prefab, new Vector3(x, y), Quaternion.identity);
+                SpriteRenderer sr = Instantiate(prefab, new Vector3(x, y), Quaternion.identity, Tilemap.transform.parent);
                 sr.gameObject.SetActive(true);
             }
         }

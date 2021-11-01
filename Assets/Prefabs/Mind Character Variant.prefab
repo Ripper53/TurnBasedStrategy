@@ -25,7 +25,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62090cde0bbb9964ea5db32e6f4037e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PoolerHolder: {fileID: 0}
   Character: {fileID: 1586931519939889517}
+--- !u!114 &7334346720242842681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695558151176016305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a01909c353652964ebe5c90716230e46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PoolerHolder: {fileID: 0}
+  Data: {fileID: 3580698623241862496}
 --- !u!1001 &609730745342246235
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37,6 +52,18 @@ PrefabInstance:
       propertyPath: MoveCondition
       value: 
       objectReference: {fileID: 1140251242390306226}
+    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3840892629697418989, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -81,6 +108,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4163296985225199675, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
+      propertyPath: Mind
+      value: 
+      objectReference: {fileID: 7334346720242842681}
     - target: {fileID: 7114051047931735274, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
       propertyPath: m_Name
       value: Mind Character Variant
@@ -105,5 +136,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a38be7ddf7b69b429ed07d48c3885a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3580698623241862496 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4163296985225199675, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
+  m_PrefabInstance: {fileID: 609730745342246235}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7695558151176016305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 478c4e43c870d054fa2892f7a2388641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -1,24 +1,34 @@
-using ArtificialIntelligence;
-using ArtificialIntelligence.Works;
+using ArtificialIntelligence.Battle;
+using ArtificialIntelligence.Battle.Works;
+using ArtificialIntelligence.Map;
+using ArtificialIntelligence.Map.Works;
 using Pooler;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MindBuilder : MonoBehaviour {
+public class MapMindBuilder : MonoBehaviour {
     public PlayerCharacter PlayerCharacter;
-    public MindPooler MindPooler;
+    public MapMindPooler MindPooler;
     public MapBuilder MapBuilder;
+    public BattleSystem BattleSystem;
 
-    private readonly Dictionary<Vector2Int, Mind> minds = new Dictionary<Vector2Int, Mind>();
+    private readonly Dictionary<Vector2Int, MapMind> minds = new Dictionary<Vector2Int, MapMind>();
     public bool IsOccupied(Vector2Int position) => minds.ContainsKey(position);
-    public bool GetOccupation(Vector2Int position, out Mind mind) {
+    public bool GetOccupation(Vector2Int position, out MapMind mind) {
         if (minds.TryGetValue(position, out mind))
             return true;
         return false;
     }
+    public void DestroyMapMindAt(Vector2Int position) {
+        int index = executionOrderOfMinds.IndexOf(minds[position]);
+        executionOrderOfMinds[index] = executionOrderOfMinds[^1];
+        executionOrderOfMinds.RemoveAt(executionOrderOfMinds.Count - 1);
+        minds[position].AddToPool();
+        minds.Remove(position);
+    }
 
-    private readonly List<Mind> executionOrderOfMinds = new List<Mind>();
+    private readonly List<MapMind> executionOrderOfMinds = new List<MapMind>();
 
     protected void Start() {
         PlayerCharacter.FinishedTurn += PlayerCharacter_FinishedTurn;
@@ -28,10 +38,10 @@ public class MindBuilder : MonoBehaviour {
         }
     }
 
-    private readonly List<Mind> mindsWhichDidNotMakeAMove = new List<Mind>();
-    private readonly List<Mind> mindsWhichStillDidNotMakeAMoveForSomeReason = new List<Mind>();
-    private struct Comparer : IComparer<Mind> {
-        public int Compare(Mind x, Mind y) {
+    private readonly List<MapMind> mindsWhichDidNotMakeAMove = new List<MapMind>();
+    private readonly List<MapMind> mindsWhichStillDidNotMakeAMoveForSomeReason = new List<MapMind>();
+    private struct Comparer : IComparer<MapMind> {
+        public int Compare(MapMind x, MapMind y) {
             if (x.Character.Position.y < y.Character.Position.y)
                 return -1;
             else if (x.Character.Position.y > y.Character.Position.y)
@@ -45,14 +55,15 @@ public class MindBuilder : MonoBehaviour {
     private void PlayerCharacter_FinishedTurn() {
         StartCoroutine(Move());
     }
-    private bool ExecuteMind(Mind mind) {
+    private bool ExecuteMind(MapMind mind) {
         Vector2Int oldPosition = mind.Character.Position;
         mind.Execute();
         if (oldPosition != mind.Character.Position) {
             minds.Remove(oldPosition);
             minds.Add(mind.Character.Position, mind);
-            if (mind.Character.Position == MapBuilder.PlayerCharacter.Position)
-                Debug.Log("FORCE ENGAGE IN BATTLE WITH " + mind.name, mind);
+            if (mind.Character.Position == MapBuilder.PlayerCharacter.Position) {
+                BattleSystem.CommenceBattle(PlayerCharacter.GetComponent<BattleData>());
+            }
             return true;
         }
         return false;
@@ -61,7 +72,7 @@ public class MindBuilder : MonoBehaviour {
     private IEnumerator Move() {
         executionOrderOfMinds.Sort(new Comparer());
 
-        foreach (Mind mind in executionOrderOfMinds) {
+        foreach (MapMind mind in executionOrderOfMinds) {
             if (!ExecuteMind(mind))
                 mindsWhichDidNotMakeAMove.Add(mind);
                 
@@ -75,7 +86,7 @@ public class MindBuilder : MonoBehaviour {
                 oldCount = mindsWhichStillDidNotMakeAMoveForSomeReason.Count;
                 mindsWhichStillDidNotMakeAMoveForSomeReason.Clear();
 
-                foreach (Mind mind in mindsWhichDidNotMakeAMove) {
+                foreach (MapMind mind in mindsWhichDidNotMakeAMove) {
                     if (!ExecuteMind(mind))
                         mindsWhichStillDidNotMakeAMoveForSomeReason.Add(mind);
                     yield return new WaitForSeconds(1f);
@@ -91,13 +102,17 @@ public class MindBuilder : MonoBehaviour {
     }
 
     public void Create(Vector2Int position) {
-        Create(out Mind mind, position);
-        mind.Add(new RandomMovementMindWork());
+        Create(out MapMind mind, position);
+        mind.Add(new RandomMovementMapWork());
+        mind.GetComponent<BattleMind>().Add(new RandomDamageBattleWork());
         mind.gameObject.SetActive(true);
     }
 
-    public bool Create(out Mind mind, Vector2Int position) {
-        if (((IPooler<Mind>)MindPooler).Get(out mind)) {
+    public bool Create(out MapMind mind, Vector2Int position) {
+        if (((IPooler<MapMind>)MindPooler).Get(out mind)) {
+            // TEMP
+            mind.transform.SetParent(MapBuilder.Tilemap.transform.parent);
+            //
             mind.MindBuilder = this;
             mind.Character.SetInitialPosition(position);
             minds.Add(position, mind);

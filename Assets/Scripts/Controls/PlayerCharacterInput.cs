@@ -1,10 +1,11 @@
-using ArtificialIntelligence;
+using ArtificialIntelligence.Map;
 using UnityEngine;
 
 public class PlayerCharacterInput : PlayerInput {
     public PlayerCharacter PlayerCharacter;
     public Character Character;
-    public MindBuilder MindBuilder;
+    public MapMindBuilder MindBuilder;
+    public BattleSystem BattleSystem;
 
     protected override void AddListeners(PlayerControls controls) {
         controls.Movement.Horizontal.performed += Horizontal_performed;
@@ -39,8 +40,8 @@ public class PlayerCharacterInput : PlayerInput {
 
     private void FinishTurn() {
         PlayerCharacter.IsTurn = false;
-        if (MindBuilder.GetOccupation(Character.Position, out Mind mind)) {
-            Debug.Log("Mind: " + mind.gameObject.name, mind);
+        if (MindBuilder.GetOccupation(Character.Position, out MapMind mind)) {
+            BattleSystem.CommenceBattle(mind.GetComponent<BattleData>());
         }
         PlayerCharacter.FinishTurn();
     }
