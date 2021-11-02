@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BattleUnit : MonoBehaviour, IPoolable<BattleUnit> {
     public SpriteRenderer SpriteRenderer;
+    public Transform UIParent;
     [System.NonSerialized]
     public BattleData Data;
 

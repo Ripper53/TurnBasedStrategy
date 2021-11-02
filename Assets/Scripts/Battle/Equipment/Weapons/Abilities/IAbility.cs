@@ -5,6 +5,6 @@ using UnityEngine;
 public interface IAbility {
 
     public string GetDescription();
-    public void Execute(IEnumerable<BattleData> targets);
+    public void Execute(IEnumerable<BodyPart> targets);
 
 }

@@ -9,9 +9,10 @@ using UnityEngine;
 
 public class MapMindBuilder : MonoBehaviour {
     public PlayerCharacter PlayerCharacter;
-    public MapMindPooler MindPooler;
     public MapBuilder MapBuilder;
     public BattleSystem BattleSystem;
+
+    public SpookyData Spooky;
 
     private readonly Dictionary<Vector2Int, MapMind> minds = new Dictionary<Vector2Int, MapMind>();
     public bool IsOccupied(Vector2Int position) => minds.ContainsKey(position);
@@ -35,7 +36,7 @@ public class MapMindBuilder : MonoBehaviour {
         PlayerCharacter.FinishedTurn += PlayerCharacter_FinishedTurn;
         for (int i = 0; i < 4; i++) {
             if (MapBuilder.GetRandomGroundPosition(out Vector2Int position))
-                Create(position);
+                Create(Character.Spooky, position);
         }
     }
 
@@ -102,18 +103,28 @@ public class MapMindBuilder : MonoBehaviour {
         PlayerCharacter.IsTurn = true;
     }
 
-    public void Create(Vector2Int position) {
-        Create(out MapMind mind, position);
-        mind.Add(new RandomMovementMapWork());
-        mind.GetComponent<BattleMind>().Add(new WeaponAttackBattleWork());
+    [System.Serializable]
+    public struct SpookyData {
+        public MapMindPooler Pooler;
+    }
+
+    public enum Character {
+        Spooky
+    }
+
+    public void Create(Character character, Vector2Int position) {
+        MapMind mind;
+        switch (character) {
+            default:
+                Create(Spooky.Pooler, out mind, position);
+                break;
+        }
         mind.gameObject.SetActive(true);
     }
 
-    public bool Create(out MapMind mind, Vector2Int position) {
-        if (((IPooler<MapMind>)MindPooler).Get(out mind)) {
-            // TEMP
+    public bool Create(IPooler<MapMind> mindPooler, out MapMind mind, Vector2Int position) {
+        if (mindPooler.Get(out mind)) {
             mind.transform.SetParent(MapBuilder.Tilemap.transform.parent);
-            //
             mind.MindBuilder = this;
             mind.Character.SetInitialPosition(position);
             minds.Add(position, mind);

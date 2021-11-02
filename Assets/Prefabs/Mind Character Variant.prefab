@@ -52,18 +52,6 @@ PrefabInstance:
       propertyPath: MoveCondition
       value: 
       objectReference: {fileID: 1140251242390306226}
-    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3840892629697418989, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
       propertyPath: m_RootOrder
       value: 0

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 public class Weapon {
     public int Damage;
 
-    private readonly List<BattleData> targets = new List<BattleData>();
-    public void Attack(IEnumerable<BattleData> targets) {
-        this.targets.Clear();
-        this.targets.AddRange(targets);
-        foreach (BattleData target in this.targets) {
+    private readonly List<BodyPart> copyOfTargets = new List<BodyPart>();
+    public void Attack(IEnumerable<BodyPart> targets) {
+        copyOfTargets.Clear();
+        copyOfTargets.AddRange(targets);
+        foreach (BodyPart target in copyOfTargets) {
             target.Damage(Damage);
         }
     }

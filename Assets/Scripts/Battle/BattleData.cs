@@ -19,6 +19,13 @@ public class BattleData : MonoBehaviour {
     }
     public Equipment Equipment;
 
+    private readonly List<BodyPart> bodyParts = new List<BodyPart>();
+    public IReadOnlyList<BodyPart> BodyParts => bodyParts;
+    public void AddBodyPart(BodyPart bodyPart) {
+        bodyPart.Source = this;
+        bodyParts.Add(bodyPart);
+    }
+
     public BattleMind Mind;
 
     public CombatData CombatData;

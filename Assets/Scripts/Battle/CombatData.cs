@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,16 +6,27 @@ using UnityEngine;
 /// </summary>
 public class CombatData : MonoBehaviour {
 
-    private readonly List<BattleData> targets = new List<BattleData>();
-    public IReadOnlyList<BattleData> Targets => targets;
-    public void AddTarget(BattleData target) {
-        targets.Add(target);
-        target.Destroyed += Target_Destroyed;
+    private readonly Dictionary<BattleData, HashSet<BodyPart>> targets = new Dictionary<BattleData, HashSet<BodyPart>>();
+    private readonly List<BodyPart> allBodyParts = new List<BodyPart>();
+    public IReadOnlyCollection<BodyPart> Targets => allBodyParts;
+    public void AddTarget(BodyPart target) {
+        if (targets.TryGetValue(target.Source, out HashSet<BodyPart> parts)) {
+            if (parts.Add(target))
+                allBodyParts.Add(target);
+        } else {
+            targets.Add(target.Source, new HashSet<BodyPart> { target });
+            target.Source.Destroyed += Target_Destroyed;
+            allBodyParts.Add(target);
+        }
     }
 
-    public void RemoveTarget(BattleData target) {
-        if (targets.Remove(target))
-            target.Destroyed -= Target_Destroyed;
+    public void RemoveTarget(BodyPart target) {
+        if (targets.TryGetValue(target.Source, out HashSet<BodyPart> parts)) {
+            if (parts.Remove(target) && parts.Count == 0)
+                targets.Remove(target.Source);
+            target.Source.Destroyed -= Target_Destroyed;
+            allBodyParts.Remove(target);
+        }
     }
 
     private void Target_Destroyed(BattleData source) {

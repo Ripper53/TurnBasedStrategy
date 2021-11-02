@@ -399,6 +399,7 @@ GameObject:
   - component: {fileID: 7804613515013206447}
   - component: {fileID: 119887570240369032}
   - component: {fileID: 4744865357393095001}
+  - component: {fileID: 6994335963767941777}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -461,7 +462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 100
+  m_ReferencePixelsPerUnit: 1
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
@@ -503,6 +504,7 @@ MonoBehaviour:
   BattleSystem: {fileID: 7804613516125023119}
   AbilityPooler: {fileID: 4744865357393095001}
   AbilitiesParent: {fileID: 1698071973504060538}
+  BodyPartUIPooler: {fileID: 6994335963767941777}
 --- !u!114 &4744865357393095001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,6 +515,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2879338fa362d64bafcd36813e97033, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 0}
+  Max: 32
+--- !u!114 &6994335963767941777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7804613515013206446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48d18a308ea04d14ab15d7b488d1b65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 0}
@@ -878,7 +894,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5187713914506533636}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999976
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

@@ -15,6 +15,7 @@ MonoBehaviour:
   PlayerCharacter: {fileID: 159435161}
   Character: {fileID: 161188602761731591}
   MindBuilder: {fileID: 0}
+  BattleSystem: {fileID: 0}
 --- !u!114 &159435161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27,6 +28,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c335b8b8f6e698409932d8839c83abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5669210245746287815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148320182821865179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35a15d86c523bc543a94e7674ba739a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BattleData: {fileID: 2704538622301350410}
 --- !u!114 &7908194897060401021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51,17 +65,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7908194897060401021}
     - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_Color.b
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_Color.g
-      value: 0.9906527
-      objectReference: {fileID: 0}
-    - target: {fileID: 3682247179110152455, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 26faff8178a22d948b5cf2aed72c99fa, type: 3}
     - target: {fileID: 3840892629697418989, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -126,5 +132,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a38be7ddf7b69b429ed07d48c3885a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2704538622301350410 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4163296985225199675, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
+  m_PrefabInstance: {fileID: 2039975604309535281}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9148320182821865179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 478c4e43c870d054fa2892f7a2388641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -65,8 +65,8 @@ public class BattleSystem : MonoBehaviour {
     private bool SpawnUnits(BattleData battleData) {
         if (SpawnUnit(PlayerData.BattleData, Team1, out BattleUnit playerUnut)) {
             if (SpawnUnit(battleData, Team2, out BattleUnit unit2)) {
-                PlayerData.BattleData.CombatData.AddTarget(battleData);
-                battleData.CombatData.AddTarget(PlayerData.BattleData);
+                PlayerData.BattleData.CombatData.AddTarget(battleData.BodyParts[0]);
+                battleData.CombatData.AddTarget(PlayerData.BattleData.BodyParts[0]);
                 unitsCommencedInBattle.Add(playerUnut);
                 unitsCommencedInBattle.Add(unit2);
                 return true;
