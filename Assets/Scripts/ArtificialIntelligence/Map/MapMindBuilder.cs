@@ -21,6 +21,7 @@ public class MapMindBuilder : MonoBehaviour {
         return false;
     }
     public void DestroyMapMindAt(Vector2Int position) {
+        Debug.Log(position);
         int index = executionOrderOfMinds.IndexOf(minds[position]);
         executionOrderOfMinds[index] = executionOrderOfMinds[^1];
         executionOrderOfMinds.RemoveAt(executionOrderOfMinds.Count - 1);
@@ -62,7 +63,7 @@ public class MapMindBuilder : MonoBehaviour {
             minds.Remove(oldPosition);
             minds.Add(mind.Character.Position, mind);
             if (mind.Character.Position == MapBuilder.PlayerCharacter.Position) {
-                BattleSystem.CommenceBattle(PlayerCharacter.GetComponent<BattleData>());
+                BattleSystem.CommenceBattle(mind.Character.BattleData);
             }
             return true;
         }
@@ -104,7 +105,7 @@ public class MapMindBuilder : MonoBehaviour {
     public void Create(Vector2Int position) {
         Create(out MapMind mind, position);
         mind.Add(new RandomMovementMapWork());
-        mind.GetComponent<BattleMind>().Add(new RandomDamageBattleWork());
+        mind.GetComponent<BattleMind>().Add(new WeaponAttackBattleWork());
         mind.gameObject.SetActive(true);
     }
 

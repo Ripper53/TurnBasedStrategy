@@ -25,6 +25,7 @@ public class BattleSystem : MonoBehaviour {
     }
 
     public MapSystem MapSystem;
+    public BattleUI BattleUI;
 
     public GameObject BattleObj;
     public BattleUnitPooler UnitPooler;
@@ -34,6 +35,7 @@ public class BattleSystem : MonoBehaviour {
     public bool CommenceBattle(BattleData battleData) {
         if (SpawnUnits(battleData)) {
             Set(true);
+            BattleUI.Initialize();
             return true;
         }
         return false;
@@ -63,8 +65,8 @@ public class BattleSystem : MonoBehaviour {
     private bool SpawnUnits(BattleData battleData) {
         if (SpawnUnit(PlayerData.BattleData, Team1, out BattleUnit playerUnut)) {
             if (SpawnUnit(battleData, Team2, out BattleUnit unit2)) {
-                PlayerData.BattleField.Target = battleData;
-                battleData.Mind.Target = PlayerData.BattleData;
+                PlayerData.BattleData.CombatData.AddTarget(battleData);
+                battleData.CombatData.AddTarget(PlayerData.BattleData);
                 unitsCommencedInBattle.Add(playerUnut);
                 unitsCommencedInBattle.Add(unit2);
                 return true;
@@ -78,6 +80,7 @@ public class BattleSystem : MonoBehaviour {
     private bool SpawnUnit(BattleData battleData, Transform parent, out BattleUnit unit) {
         if (((IPooler<BattleUnit>)UnitPooler).Get(out unit)) {
             unit.Data = battleData;
+            unit.Data.CombatData.Initialize();
             battleData.BattleSystem = this;
             battleData.BattleUnit = unit;
             unit.SpriteRenderer.sprite = battleData.SpriteRenderer.sprite;

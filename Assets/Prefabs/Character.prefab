@@ -96,6 +96,8 @@ GameObject:
   - component: {fileID: 2194338437767722038}
   - component: {fileID: 4975541005261875582}
   - component: {fileID: 4163296985225199675}
+  - component: {fileID: 1453491921794152731}
+  - component: {fileID: 2521509138224959220}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -132,6 +134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Map: {fileID: 0}
+  BattleData: {fileID: 4163296985225199675}
   MoveCondition: {fileID: 0}
 --- !u!114 &4975541005261875582
 MonoBehaviour:
@@ -164,4 +167,30 @@ MonoBehaviour:
   MapSystem: {fileID: 0}
   SpriteRenderer: {fileID: 3682247179110152455}
   health: 1
+  Equipment: {fileID: 1453491921794152731}
   Mind: {fileID: 0}
+  CombatData: {fileID: 2521509138224959220}
+--- !u!114 &1453491921794152731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7114051047931735274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a112748801358c14081dee0edaf5802e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2521509138224959220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7114051047931735274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0de4019110f8541b9a29ec34442be0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

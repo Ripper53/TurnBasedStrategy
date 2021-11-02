@@ -17,8 +17,11 @@ public class BattleData : MonoBehaviour {
                 Destroy();
         }
     }
+    public Equipment Equipment;
 
     public BattleMind Mind;
+
+    public CombatData CombatData;
 
     [System.NonSerialized]
     public BattleSystem BattleSystem;
@@ -33,9 +36,13 @@ public class BattleData : MonoBehaviour {
         Health += heal;
     }
 
+    public delegate void DestroyedAction(BattleData source);
+    public event DestroyedAction Destroyed;
     public void Destroy() {
         BattleSystem.RemoveUnitFromBattle(BattleUnit);
-        MapSystem.RemoveCharacterFromMap(Character);
+        if (Mind)
+            MapSystem.RemoveCharacterFromMap(Character);
+        Destroyed?.Invoke(this);
     }
 
 }

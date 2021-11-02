@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
     public Map Map;
+    public BattleData BattleData;
     public CharacterMoveCondition MoveCondition;
 
     public Vector2Int Position { get; private set; }
