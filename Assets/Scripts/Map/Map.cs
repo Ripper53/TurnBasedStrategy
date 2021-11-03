@@ -3,13 +3,15 @@ using UnityEngine;
 public class Map : MonoBehaviour {
     private Tile[,] values;
     public enum Tile {
-        Wall, Ground
+        None, Wall, Ground
     }
     public int Width { get; private set; }
     public int Height { get; private set; }
 
     public Tile this[int x, int y] => values[x, y];
     public Tile this[Vector2Int position] => values[position.x, position.y];
+
+    private readonly WaveFunctionCollapse waveFunctionCollapse = new WaveFunctionCollapse();
 
     public void Generate(int width, int height) {
         // Generate enum array for map.
@@ -26,6 +28,9 @@ public class Map : MonoBehaviour {
                 };
             }
         }
+        values[1, 1] = Tile.Wall;
+
+        values = waveFunctionCollapse.Run(this, Width, Height, 0, false, 0);
 
     }
 

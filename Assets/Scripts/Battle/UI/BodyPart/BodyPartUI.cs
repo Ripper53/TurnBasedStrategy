@@ -11,6 +11,7 @@ public class BodyPartUI : ObjectPoolable, IPoolable<BodyPartUI>, IPointerEnterHa
     public IPooler<BodyPartUI> Pooler { get; set; }
     protected override void AddedToPool() { }
 
+    public RectTransform RectTransform;
     public Image Image;
     public Sprite AvailableSprite, HoverSprite, SelectedSprite;
 

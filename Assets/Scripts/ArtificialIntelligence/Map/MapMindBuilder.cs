@@ -13,6 +13,8 @@ public class MapMindBuilder : MonoBehaviour {
     public BattleSystem BattleSystem;
 
     public SpookyData Spooky;
+    public DragonData Dragon;
+    public WarriorData Warrior;
 
     private readonly Dictionary<Vector2Int, MapMind> minds = new Dictionary<Vector2Int, MapMind>();
     public bool IsOccupied(Vector2Int position) => minds.ContainsKey(position);
@@ -34,9 +36,13 @@ public class MapMindBuilder : MonoBehaviour {
 
     protected void Start() {
         PlayerCharacter.FinishedTurn += PlayerCharacter_FinishedTurn;
-        for (int i = 0; i < 4; i++) {
+        CreateAtRandomPosition(Character.Spooky, 2);
+        CreateAtRandomPosition(Character.Dragon, 2);
+    }
+    private void CreateAtRandomPosition(Character character, int count) {
+        for (int i = 0; i < count; i++) {
             if (MapBuilder.GetRandomGroundPosition(out Vector2Int position))
-                Create(Character.Spooky, position);
+                Create(character, position);
         }
     }
 
@@ -74,11 +80,12 @@ public class MapMindBuilder : MonoBehaviour {
     private IEnumerator Move() {
         executionOrderOfMinds.Sort(new Comparer());
 
+        const float moveInterval = 0.1f;
         foreach (MapMind mind in executionOrderOfMinds) {
             if (!ExecuteMind(mind))
                 mindsWhichDidNotMakeAMove.Add(mind);
-                
-            yield return new WaitForSeconds(0.1f);
+            else
+                yield return new WaitForSeconds(moveInterval);
         }
 
         if (mindsWhichDidNotMakeAMove.Count != 0) {
@@ -91,7 +98,8 @@ public class MapMindBuilder : MonoBehaviour {
                 foreach (MapMind mind in mindsWhichDidNotMakeAMove) {
                     if (!ExecuteMind(mind))
                         mindsWhichStillDidNotMakeAMoveForSomeReason.Add(mind);
-                    yield return new WaitForSeconds(1f);
+                    else
+                        yield return new WaitForSeconds(moveInterval);
                 }
             } while (mindsWhichStillDidNotMakeAMoveForSomeReason.Count != oldCount);
 
@@ -108,15 +116,33 @@ public class MapMindBuilder : MonoBehaviour {
         public MapMindPooler Pooler;
     }
 
+    [System.Serializable]
+    public struct DragonData {
+        public MapMindPooler Pooler;
+    }
+
+    [System.Serializable]
+    public struct WarriorData {
+        public MapMindPooler Pooler;
+    }
+
     public enum Character {
-        Spooky
+        Spooky,
+        Dragon,
+        Warrior
     }
 
     public void Create(Character character, Vector2Int position) {
         MapMind mind;
         switch (character) {
-            default:
+            case Character.Spooky:
                 Create(Spooky.Pooler, out mind, position);
+                break;
+            case Character.Dragon:
+                Create(Dragon.Pooler, out mind, position);
+                break;
+            default:
+                Create(Warrior.Pooler, out mind, position);
                 break;
         }
         mind.gameObject.SetActive(true);

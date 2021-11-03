@@ -41,6 +41,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BattleData: {fileID: 2704538622301350410}
+  Positions:
+    Head: {x: 0, y: 0.5}
+    Torso: {x: 0, y: 0}
+    Arms: {x: 0.25, y: 0}
+    Feet: {x: 0, y: -0.5}
+  Sizes:
+    Head: {x: 0.25, y: 0.25}
+    Torso: {x: 0.5, y: 0.5}
+    Arms: {x: 0.25, y: 0.5}
+    Feet: {x: 0.25, y: 0.25}
 --- !u!114 &7908194897060401021
 MonoBehaviour:
   m_ObjectHideFlags: 0

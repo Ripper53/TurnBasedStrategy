@@ -68,7 +68,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 517df9bb63d9bff4581aa5abd2a7e36b, type: 3}
-  m_Type: 1
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PoolerHolder: {fileID: 0}
+  RectTransform: {fileID: 8514874849876900560}
   Image: {fileID: 8702191016643462701}
   AvailableSprite: {fileID: 21300000, guid: 517df9bb63d9bff4581aa5abd2a7e36b, type: 3}
   HoverSprite: {fileID: 21300000, guid: e2e14aca2da87b94e95c1318a18b1dab, type: 3}

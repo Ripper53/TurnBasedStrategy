@@ -3,11 +3,12 @@ using UnityEngine;
 public class BodyPart {
     public BattleData Source { get; internal set; }
     public readonly string Name;
-    public readonly Vector2 Position;
+    public readonly Vector2 Position, Size;
 
-    public BodyPart(string name, Vector2 position) {
+    public BodyPart(string name, Vector2 position, Vector2 size) {
         Name = name;
         Position = position;
+        Size = size;
     }
 
     public void Damage(int damage) {

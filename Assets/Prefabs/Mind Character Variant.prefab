@@ -104,10 +104,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mind Character Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 7114051047931735274, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc60b0b8bc1e73e4aaf480f0810745b7, type: 3}
 --- !u!1 &7695558151176016305 stripped

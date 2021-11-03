@@ -22,6 +22,7 @@ public class BattleUI : MonoBehaviour {
                     bodyPartUI.BodyPart = part;
                     bodyPartUI.transform.SetParent(unit.UIParent);
                     bodyPartUI.transform.localPosition = part.Position;
+                    bodyPartUI.RectTransform.sizeDelta = part.Size;
                     bodyPartUI.gameObject.SetActive(true);
                 }
             }
