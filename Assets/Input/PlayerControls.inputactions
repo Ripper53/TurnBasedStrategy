@@ -92,6 +92,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "Pointer",
+            "id": "a0632e3d-a905-42e3-989f-11c5616ebf99",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "a1b289da-3e5a-4927-aac2-9c35d45e9ab2",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "601529a1-684c-4d31-9a95-e649d115b354",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

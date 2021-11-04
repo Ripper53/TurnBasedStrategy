@@ -15,7 +15,11 @@ public class MapData {
         Width = map.Width;
         Height = map.Height;
         Tiles = new List<Map.Tile>(Width * Height);
-        foreach (Map.Tile tile in map)
-            Tiles.Add(tile);
+        foreach (Map.Tile tile in map) {
+            if (tile == Map.Tile.None)
+                Tiles.Add(Map.Tile.Wall);
+            else
+                Tiles.Add(tile);
+        }
     }
 }

@@ -37,6 +37,22 @@ public class WaveFunctionCollapse {
         { Map.Tile.Wall, new Neighbors(Map.Tile.Wall) },
         { Map.Tile.Ground, new Neighbors(Map.Tile.Ground) }
     };
+    private class TileRatio {
+        public readonly Map.Tile Tile;
+        public readonly int Capacity;
+        /// <summary>
+        /// True if tile ratio will be counted, otherwise false if tile cannot be placed.
+        /// </summary>
+        public bool IsOpen;
+        public int Count;
+        public float Percentage => (float)Count / Capacity;
+        public TileRatio(Map.Tile tile, int capacity) {
+            Tile = tile;
+            Capacity = capacity;
+            Count = 0;
+            IsOpen = true;
+        }
+    }
     /// <summary>
     /// https://www.procjam.com/tutorials/wfc/
     /// </summary>
@@ -52,6 +68,12 @@ public class WaveFunctionCollapse {
             neighbor.Clear();
         }
 
+        TileRatio
+            groundRatio = new TileRatio(Map.Tile.Wall, map.Width * map.Height),
+            wallRatio = new TileRatio(Map.Tile.Ground, map.Width * map.Height);
+        TileRatio[] tileRatios = new TileRatio[] {
+            groundRatio, wallRatio
+        };
         for (int y = 0; y < map.Height; y++) {
             for (int x = 0; x < map.Width; x++) {
                 Vector2Int pos = new Vector2Int(x, y);
@@ -59,6 +81,14 @@ public class WaveFunctionCollapse {
                     Vector2Int neighborPos = pos + p;
                     if (map.InBounds(neighborPos))
                         neighbors[map[x, y]].IsNeighbor(map[neighborPos], p);
+                }
+                switch (map[x, y]) {
+                    case Map.Tile.Ground:
+                        groundRatio.Count++;
+                        break;
+                    default:
+                        wallRatio.Count++;
+                        break;
                 }
             }
         }
@@ -87,34 +117,37 @@ public class WaveFunctionCollapse {
             tiles[x, y] = tile;
             return true;
         }
-        void TryToPlaceRandomTile(List<Map.Tile> randomTiles, int x, int y, ref int i) {
-            do {
-                i++;
-                int randomIndex = Random.Range(0, randomTiles.Count);
-                switch (randomTiles[randomIndex]) {
-                    case Map.Tile.Ground:
-                        // Ground
-                        if (TryPlace(Map.Tile.Ground, x, y))
-                            return;
-                        break;
-                    default:
-                        // Wall
-                        if (TryPlace(Map.Tile.Wall, x, y))
-                            return;
-                        break;
-                }
-                randomTiles[randomIndex] = randomTiles[^1];
-                randomTiles.RemoveAt(randomTiles.Count - 1);
-            } while (randomTiles.Count != 0);
+        TileRatio GetTileFromRatio(float v) {
+            float per = 0f;
+            foreach (TileRatio ratio in tileRatios) {
+                per += ratio.Percentage;
+                if (ratio.IsOpen && per <= v)
+                    return ratio;
+            }
+            return tileRatios[^1];
         }
-
+        void TryToPlaceRandomTile(TileRatio[] tileRatio, int x, int y, ref int i) {
+            for (int k = 0; k < tileRatio.Length; k++) {
+                i++;
+                float r = Random.Range(0f, 1f);
+                TileRatio ratio = GetTileFromRatio(r);
+                if (TryPlace(ratio.Tile, x, y))
+                    return;
+                ratio.IsOpen = false;
+            }
+        }
+        float temp = 0f;
+        foreach (TileRatio tileRatio in tileRatios) {
+            temp += tileRatio.Percentage;
+        }
+        Debug.Log("PER: " + temp);
         int i = 0;
-        List<Map.Tile> randomTiles = new List<Map.Tile>(2);
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w && i < int.MaxValue - 1; x++) {
-                randomTiles.Clear();
-                randomTiles.AddRange(GetTiles());
-                TryToPlaceRandomTile(randomTiles, x, y, ref i);
+                TryToPlaceRandomTile(tileRatios, x, y, ref i);
+                foreach (TileRatio ratio in tileRatios) {
+                    ratio.IsOpen = true;
+                }
             }
         }
         Debug.Log("Generate iterations: " + i);
@@ -124,7 +157,7 @@ public class WaveFunctionCollapse {
 
         return tiles;
     }
-    private IEnumerable<Vector2Int> GetN(int n = 2) {
+    private IEnumerable<Vector2Int> GetN(int n = 1) {
         bool CheckIfWithinDistance(Vector2Int pos) {
             return (pos.x * pos.x) + (pos.y * pos.y) <= (n * n);
         }

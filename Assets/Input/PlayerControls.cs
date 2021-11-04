@@ -114,6 +114,34 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Pointer"",
+            ""id"": ""a0632e3d-a905-42e3-989f-11c5616ebf99"",
+            ""actions"": [
+                {
+                    ""name"": ""Position"",
+                    ""type"": ""Value"",
+                    ""id"": ""a1b289da-3e5a-4927-aac2-9c35d45e9ab2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""601529a1-684c-4d31-9a95-e649d115b354"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -134,6 +162,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Horizontal = m_Movement.FindAction("Horizontal", throwIfNotFound: true);
         m_Movement_Vertical = m_Movement.FindAction("Vertical", throwIfNotFound: true);
+        // Pointer
+        m_Pointer = asset.FindActionMap("Pointer", throwIfNotFound: true);
+        m_Pointer_Position = m_Pointer.FindAction("Position", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -230,6 +261,39 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // Pointer
+    private readonly InputActionMap m_Pointer;
+    private IPointerActions m_PointerActionsCallbackInterface;
+    private readonly InputAction m_Pointer_Position;
+    public struct PointerActions
+    {
+        private @PlayerControls m_Wrapper;
+        public PointerActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Position => m_Wrapper.m_Pointer_Position;
+        public InputActionMap Get() { return m_Wrapper.m_Pointer; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PointerActions set) { return set.Get(); }
+        public void SetCallbacks(IPointerActions instance)
+        {
+            if (m_Wrapper.m_PointerActionsCallbackInterface != null)
+            {
+                @Position.started -= m_Wrapper.m_PointerActionsCallbackInterface.OnPosition;
+                @Position.performed -= m_Wrapper.m_PointerActionsCallbackInterface.OnPosition;
+                @Position.canceled -= m_Wrapper.m_PointerActionsCallbackInterface.OnPosition;
+            }
+            m_Wrapper.m_PointerActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Position.started += instance.OnPosition;
+                @Position.performed += instance.OnPosition;
+                @Position.canceled += instance.OnPosition;
+            }
+        }
+    }
+    public PointerActions @Pointer => new PointerActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -243,5 +307,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     {
         void OnHorizontal(InputAction.CallbackContext context);
         void OnVertical(InputAction.CallbackContext context);
+    }
+    public interface IPointerActions
+    {
+        void OnPosition(InputAction.CallbackContext context);
     }
 }
