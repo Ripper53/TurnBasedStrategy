@@ -2,49 +2,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WaveFunctionCollapse {
-
+    
     private class Neighbors {
         public readonly Map.Tile Tile;
-        private readonly Dictionary<Vector2Int, List<Map.Tile>> requiredNeighbors;
+        public readonly Dictionary<Vector2Int, List<Map.Tile>> requiredNeighbors;
         public Neighbors(Map.Tile tile) {
             Tile = tile;
             requiredNeighbors = new Dictionary<Vector2Int, List<Map.Tile>>();
         }
-        public void IsNeighbor(Map.Tile tile, Vector2Int position) {
+        public void IsNeighbor(Map.Tile neighboringTile, Vector2Int position) {
             if (requiredNeighbors.TryGetValue(position, out List<Map.Tile> tiles)) {
-                if (!tiles.Contains(tile))
-                    tiles.Add(tile);
+                if (!tiles.Contains(neighboringTile))
+                    tiles.Add(neighboringTile);
             } else {
                 requiredNeighbors.Add(position, new List<Map.Tile> {
-                    tile
+                    neighboringTile
                 });
             }
         }
         public IReadOnlyList<Map.Tile> GetNeighbors(Vector2Int position) {
             return requiredNeighbors[position];
         }
-        public struct Neighbor {
-            public readonly Map.Tile Tile;
-            public readonly Vector2Int Position;
-            public Neighbor(Map.Tile tile, Vector2Int position) {
-                Tile = tile;
-                Position = position;
+        public bool IsRequired(Vector2Int position, Map.Tile neighbor) {
+            if (neighbor == Map.Tile.None || !requiredNeighbors.ContainsKey(position)) return true;
+            foreach (Map.Tile tile in requiredNeighbors[position]) {
+                if (tile == neighbor)
+                    return true;
             }
-        }
-        public bool IsRequired(Map map, Vector2Int position, IEnumerable<Neighbor> neighbors) {
-            bool A(Vector2Int pos, List<Map.Tile> tiles) {
-                foreach (Map.Tile tile in tiles) {
-                    if (map[pos] == tile || map[pos] == Map.Tile.None)
-                        return true;
-                }
-                return false;
-            }
-            foreach (KeyValuePair<Vector2Int, List<Map.Tile>> pair in requiredNeighbors) {
-                Vector2Int pos = position + pair.Key;
-                if (map.InBounds(pos) && !A(pos, pair.Value))
-                    return false;
-            }
-            return true;
+            return false;
         }
         public void Clear() => requiredNeighbors.Clear();
     }
@@ -78,23 +63,31 @@ public class WaveFunctionCollapse {
             }
         }
 
-        IEnumerable<Neighbors.Neighbor> GetNeighbors(Vector2Int position) {
-            foreach (Vector2Int pos in GetN())
-                yield return new Neighbors.Neighbor(map[position + pos], pos);
+        foreach (var pair in neighbors.Values) {
+            string a = pair.Tile +": ";
+            foreach (var b in pair.requiredNeighbors) {
+                a += b.Key + ", ";
+                foreach (Map.Tile tile in b.Value)
+                    a += tile + "|";
+            }
+            Debug.Log(a);
         }
+
         Map.Tile[,] tiles = new Map.Tile[w, h];
         bool TryPlace(Map.Tile tile, int x, int y) {
             foreach (Vector2Int neighborPos in GetN()) {
                 Vector2Int p = new Vector2Int(x, y) + neighborPos;
-                if (map.InBounds(p)) {
-                    if (!neighbors[tile].IsRequired(map, p, GetNeighbors(p)))
+                if (p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
+                    if (!neighbors[tile].IsRequired(neighborPos, tiles[p.x, p.y])) {
+                        Debug.Log($"FAILED: {tile}, {p}");
                         return false;
+                    }
                 }
             }
             tiles[x, y] = tile;
             return true;
         }
-        void A(List<Map.Tile> randomTiles, int x, int y, ref int i) {
+        void TryToPlaceRandomTile(List<Map.Tile> randomTiles, int x, int y, ref int i) {
             do {
                 i++;
                 int randomIndex = Random.Range(0, randomTiles.Count);
@@ -121,18 +114,27 @@ public class WaveFunctionCollapse {
             for (int x = 0; x < w && i < int.MaxValue - 1; x++) {
                 randomTiles.Clear();
                 randomTiles.AddRange(GetTiles());
-                A(randomTiles, x, y, ref i);
+                TryToPlaceRandomTile(randomTiles, x, y, ref i);
             }
         }
         Debug.Log("Generate iterations: " + i);
+        foreach (Vector2Int b in GetN()) {
+            Debug.Log("N: " + b);
+        }
 
         return tiles;
     }
-    private IEnumerable<Vector2Int> GetN() {
-        yield return new Vector2Int(0, 1);
-        yield return new Vector2Int(1, 0);
-        yield return new Vector2Int(0, -1);
-        yield return new Vector2Int(-1, 0);
+    private IEnumerable<Vector2Int> GetN(int n = 2) {
+        bool CheckIfWithinDistance(Vector2Int pos) {
+            return (pos.x * pos.x) + (pos.y * pos.y) <= (n * n);
+        }
+        for (int y = -n; y <= n; y++) {
+            for (int x = -n; x <= n; x++) {
+                Vector2Int pos = new Vector2Int(x, y);
+                if (pos != Vector2Int.zero && CheckIfWithinDistance(pos))
+                    yield return pos;
+            }
+        }
     }
     private IEnumerable<Map.Tile> GetTiles() {
         yield return Map.Tile.Wall;

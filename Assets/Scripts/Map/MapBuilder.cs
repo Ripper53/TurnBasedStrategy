@@ -40,9 +40,12 @@ public class MapBuilder : MonoBehaviour {
                         prefab = GroundPrefab;
                         groundPosition.Add(new Vector2Int(x, y));
                         break;
-                    default:
+                    case Map.Tile.Wall:
                         prefab = WallPrefab;
                         break;
+                    default:
+                        Debug.Log("NONE TILE!");
+                        continue;
                 }
 
                 SpriteRenderer sr = Instantiate(prefab, new Vector3(x, y), Quaternion.identity, Tilemap.transform.parent);
