@@ -5,33 +5,53 @@ public class WaveFunctionCollapse {
     
     private class Neighbors {
         public readonly Map.Tile Tile;
-        public readonly Dictionary<Vector2Int, List<Map.Tile>> requiredNeighbors;
+        public readonly Dictionary<Vector2Int, List<Map.Tile>> possibleNeighbors;
+        private readonly Dictionary<Map.Tile, int> requiredNeighbors;
         public Neighbors(Map.Tile tile) {
             Tile = tile;
-            requiredNeighbors = new Dictionary<Vector2Int, List<Map.Tile>>();
+            possibleNeighbors = new Dictionary<Vector2Int, List<Map.Tile>>();
+            requiredNeighbors = new Dictionary<Map.Tile, int>(2) {
+                { Map.Tile.Wall, 0 },
+                { Map.Tile.Ground, 0 }
+            };
         }
+        public void ReinitializeForNewTile() {
+            alreadyChecksIfRequired.Clear();
+        }
+        private readonly HashSet<Map.Tile> alreadyChecksIfRequired = new HashSet<Map.Tile>();
         public void IsNeighbor(Map.Tile neighboringTile, Vector2Int position) {
-            if (requiredNeighbors.TryGetValue(position, out List<Map.Tile> tiles)) {
+            if (alreadyChecksIfRequired.Add(neighboringTile))
+                requiredNeighbors[neighboringTile]++;
+            if (possibleNeighbors.TryGetValue(position, out List<Map.Tile> tiles)) {
                 if (!tiles.Contains(neighboringTile))
                     tiles.Add(neighboringTile);
             } else {
-                requiredNeighbors.Add(position, new List<Map.Tile> {
+                possibleNeighbors.Add(position, new List<Map.Tile> {
                     neighboringTile
                 });
             }
         }
         public IReadOnlyList<Map.Tile> GetNeighbors(Vector2Int position) {
-            return requiredNeighbors[position];
+            return possibleNeighbors[position];
         }
-        public bool IsRequired(Vector2Int position, Map.Tile neighbor) {
-            if (neighbor == Map.Tile.None || !requiredNeighbors.ContainsKey(position)) return true;
-            foreach (Map.Tile tile in requiredNeighbors[position]) {
+        public bool IsRequired(Vector2Int position, Map.Tile neighbor, int max) {
+            if (neighbor == Map.Tile.None) return true;
+            Debug.Log($"COUNT, {Tile}, {neighbor}: {requiredNeighbors[neighbor]} >= {max}");
+            if (requiredNeighbors[neighbor] < max)
+                return false;
+            if (!possibleNeighbors.ContainsKey(position)) return false;
+            foreach (Map.Tile tile in possibleNeighbors[position]) {
                 if (tile == neighbor)
                     return true;
             }
             return false;
         }
-        public void Clear() => requiredNeighbors.Clear();
+        public void Clear() {
+            possibleNeighbors.Clear();
+            requiredNeighbors.Clear();
+            requiredNeighbors.Add(Map.Tile.Wall, 0);
+            requiredNeighbors.Add(Map.Tile.Ground, 0);
+        }
     }
     private readonly Dictionary<Map.Tile, Neighbors> neighbors = new Dictionary<Map.Tile, Neighbors>(2) {
         { Map.Tile.Wall, new Neighbors(Map.Tile.Wall) },
@@ -74,10 +94,15 @@ public class WaveFunctionCollapse {
         TileRatio[] tileRatios = new TileRatio[] {
             groundRatio, wallRatio
         };
+        Dictionary<Map.Tile, TileRatio> max = new Dictionary<Map.Tile, TileRatio> {
+            { Map.Tile.Ground, groundRatio },
+            { Map.Tile.Wall, wallRatio }
+        };
         for (int y = 0; y < map.Height; y++) {
             for (int x = 0; x < map.Width; x++) {
                 Vector2Int pos = new Vector2Int(x, y);
-                foreach (Vector2Int p in GetN()) {
+                neighbors[map[x, y]].ReinitializeForNewTile();
+                foreach (Vector2Int p in GetN(n)) {
                     Vector2Int neighborPos = pos + p;
                     if (map.InBounds(neighborPos))
                         neighbors[map[x, y]].IsNeighbor(map[neighborPos], p);
@@ -95,7 +120,7 @@ public class WaveFunctionCollapse {
 
         foreach (var pair in neighbors.Values) {
             string a = pair.Tile +": ";
-            foreach (var b in pair.requiredNeighbors) {
+            foreach (var b in pair.possibleNeighbors) {
                 a += b.Key + ", ";
                 foreach (Map.Tile tile in b.Value)
                     a += tile + "|";
@@ -105,10 +130,10 @@ public class WaveFunctionCollapse {
 
         Map.Tile[,] tiles = new Map.Tile[w, h];
         bool TryPlace(Map.Tile tile, int x, int y) {
-            foreach (Vector2Int neighborPos in GetN()) {
+            foreach (Vector2Int neighborPos in GetN(n)) {
                 Vector2Int p = new Vector2Int(x, y) + neighborPos;
                 if (p.x >= 0 && p.x < w && p.y >= 0 && p.y < h) {
-                    if (!neighbors[tile].IsRequired(neighborPos, tiles[p.x, p.y])) {
+                    if (!neighbors[tile].IsRequired(neighborPos, tiles[p.x, p.y], max[tile].Count)) {
                         Debug.Log($"FAILED: {tile}, {p}");
                         return false;
                     }
@@ -151,13 +176,13 @@ public class WaveFunctionCollapse {
             }
         }
         Debug.Log("Generate iterations: " + i);
-        foreach (Vector2Int b in GetN()) {
+        foreach (Vector2Int b in GetN(n)) {
             Debug.Log("N: " + b);
         }
 
         return tiles;
     }
-    private IEnumerable<Vector2Int> GetN(int n = 1) {
+    private IEnumerable<Vector2Int> GetN(int n) {
         bool CheckIfWithinDistance(Vector2Int pos) {
             return (pos.x * pos.x) + (pos.y * pos.y) <= (n * n);
         }

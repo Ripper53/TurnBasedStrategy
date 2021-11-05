@@ -30,7 +30,7 @@ public class Map : MonoBehaviour, IEnumerable<Map.Tile> {
         values = new Tile[width, height];
     }
 
-    public void Generate(int width, int height) {
+    public void Generate(int width, int height, int n) {
         // Generate enum array for map.
         SetSize(width, height);
 
@@ -45,7 +45,11 @@ public class Map : MonoBehaviour, IEnumerable<Map.Tile> {
         values[1, 1] = Tile.Wall;
         values[2, 1] = Tile.Wall;
 
-        values = waveFunctionCollapse.Run(this, Width, Height, 0, false, 0);
+        Deserialize("Test");
+
+        values = waveFunctionCollapse.Run(this, width, height, n, false, 0);
+        Width = width;
+        Height = height;
 
     }
 

@@ -6,11 +6,12 @@ public class MapSystem : MonoBehaviour {
     public MapBuilder Builder;
     public MapMindBuilder MapMindBuilder;
     public int Width = 10, Height = 10;
+    public int PatternRadius = 1;
 
     public GameObject MapObj;
 
     protected void Awake() {
-        Map.Generate(Width, Height);
+        Map.Generate(Width, Height, PatternRadius);
         Builder.Build(Map);
     }
 

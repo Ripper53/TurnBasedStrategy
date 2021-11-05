@@ -1458,6 +1458,7 @@ MonoBehaviour:
   MapMindBuilder: {fileID: 988242336}
   Width: 100
   Height: 100
+  PatternRadius: 1
   MapObj: {fileID: 1367487522}
 --- !u!114 &1554688115 stripped
 MonoBehaviour:
